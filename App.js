@@ -1,57 +1,70 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, Button, TextInput, View } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  Button,
+  TextInput,
+  View,
+  FlatList
+} from 'react-native';
 
 export default function App() {
-  const [outputText, setOutputText] = useState('Starting text');
+  const [enteredGoal, setEnteredGoal] = useState('');
+  const [courseGoals, setCourseGoals] = useState([]);
+
+  const goalInutHandler = (enteredText) => {
+    setEnteredGoal(enteredText)
+    console.log(enteredText)
+  };
+
+  const addGoalHandler = () => {
+    setCourseGoals(courseGoals => [...courseGoals,
+    { id: Math.random().toString(), value: enteredGoal }]);
+    console.log(courseGoals)
+  }
+
   return (
-    <View style={{ padding: 50 }}>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-        <TextInput placeholder="Course goal" style={{ width: '80%', borderColor: 'black', borderWidth: 1 }} />
-        <Button title="Add" />
-
-      </View>
-      <View>
-
-      </View>
-
-      <View style={
-        {
-          padding: 50,
-          flexDirection: "row",
-          width: '80%',
-          height: 300,
-          justifyContent: 'space-around',
-          alignItems: 'stretch'
-        }
-      }>
-        <View
-          style={{
-            backgroundColor: 'red',
-            flex: 3,
-            justifyContent: 'center',
-            alignItems: 'center'
-          }}>
-          <Text>1</Text>
-        </View>
-        <View
-          style={{
-            backgroundColor: 'blue',
-            flex: 2,
-            justifyContent: 'center',
-            alignItems: 'center'
-          }}>
-          <Text>2</Text>
-        </View>
-        <View
-          style={{
-            backgroundColor: 'green',
-            justifyContent: 'center',
-            alignItems: 'center'
-          }}>
-          <Text>3</Text>
-        </View>
+    <View style={styles.screen}>
+      <View style={styles.inputContainer}>
+        <TextInput
+          placeholder="Course goal"
+          style={styles.input}
+          onChangeText={goalInutHandler}
+          value={enteredGoal}
+        />
+        <Button title="Add" onPress={addGoalHandler} />
       </View>
 
-    </View>
+      <FlatList
+        data={courseGoals}
+        keyExtractor={(item, index) => item.id}
+        renderItem={itemData => (
+          <View style={styles.listItem}>
+            <Text>{itemData.item.value}</Text>
+          </View>
+        )}
+      />
+    </View >
   );
 }
+
+const styles = StyleSheet.create({
+  screen: {
+    padding: 50,
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  },
+  input: {
+    width: '80%', borderColor: 'black', borderWidth: 1
+  },
+  listItem: {
+    padding: 10,
+    marginVertical: 10,
+    backgroundColor: '#ccc',
+    borderColor: 'black',
+    borderWidth: 1
+  }
+});
